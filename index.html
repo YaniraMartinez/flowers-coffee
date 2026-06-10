@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowers Coffee — Cafetería & Bar</title>
+<link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blush:#fdf3ec; --coral:#e8a07a; --terracota:#c4623a; --mauve:#d4a0a0;
+  --sage:#9db89a; --sage-d:#6e9068; --brown:#7a4e3e; --ink:#3d2318;
+  --cream:#faf5f0; --gold:#c49a6c;
+}
+body {
+  background: var(--blush);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 10% 10%, #fde8d680 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90% 90%, #f9d9c870 0%, transparent 55%);
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 12px 50px; gap: 20px;
+  font-family: 'Jost', sans-serif;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cg opacity='0.06'%3E%3Cellipse cx='80' cy='30' rx='10' ry='18' fill='%23e8a07a' transform='rotate(0 80 60)'/%3E%3Cellipse cx='80' cy='30' rx='10' ry='18' fill='%23d4a0a0' transform='rotate(45 80 60)'/%3E%3Ccircle cx='80' cy='60' r='8' fill='%23c49a6c'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+.header { text-align:center; position:relative; z-index:2; animation: fadeUp .7s ease both; }
+.logo { font-family:'Pinyon Script',cursive; font-size:68px; color:var(--terracota); line-height:1; filter:drop-shadow(0 2px 8px rgba(196,98,58,.15)); }
+.tagline { font-size:10px; letter-spacing:.45em; color:var(--coral); text-transform:uppercase; font-weight:300; margin-top:2px; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+.tabs { display:flex; gap:0; background:rgba(255,255,255,.55); border:1px solid rgba(196,98,58,.2); border-radius:40px; padding:4px; position:relative; z-index:2; backdrop-filter:blur(8px); flex-wrap:wrap; justify-content:center; animation: fadeUp .7s .1s ease both; }
+.tab { font-size:10px; letter-spacing:.18em; text-transform:uppercase; padding:8px 16px; border:none; background:transparent; color:var(--brown); border-radius:40px; cursor:pointer; transition:all .3s; font-family:'Jost',sans-serif; font-weight:400; white-space:nowrap; }
+.tab.active { background:var(--terracota); color:#fff; box-shadow:0 4px 14px rgba(196,98,58,.3); }
+
+.scene { perspective:1400px; position:relative; z-index:2; }
+.triptico { display:flex; align-items:stretch; filter:drop-shadow(0 10px 35px rgba(100,50,30,.16)); animation: fadeUp .8s .2s ease both; }
+.panel { width:222px; min-height:600px; background:var(--cream); position:relative; overflow:hidden; transition:transform .5s cubic-bezier(.4,0,.2,1); }
+.panel-l { border-radius:6px 0 0 6px; transform-origin:right center; }
+.panel-c { z-index:2; }
+.panel-r { border-radius:0 6px 6px 0; transform-origin:left center; }
+.triptico:hover .panel-l { transform:rotateY(-4deg) translateX(-2px); }
+.triptico:hover .panel-r { transform:rotateY(4deg) translateX(2px); }
+.lomo { width:5px; background:linear-gradient(180deg,#f0c8a8,#e8b090,#f0c8a8); flex-shrink:0; z-index:3; }
+
+.marco { position:absolute; inset:8px; border:.75px solid rgba(196,98,58,.14); border-radius:2px; pointer-events:none; z-index:1; }
+.marco::before { content:''; position:absolute; top:-1px;left:-1px; width:12px;height:12px; border-top:1.5px solid var(--coral); border-left:1.5px solid var(--coral); }
+.marco::after  { content:''; position:absolute; bottom:-1px;right:-1px; width:12px;height:12px; border-bottom:1.5px solid var(--coral); border-right:1.5px solid var(--coral); }
+.petal { position:absolute; pointer-events:none; z-index:1; }
+
+.p-inner { padding:22px 18px 30px; display:flex; flex-direction:column; height:100%; position:relative; z-index:2; }
+.etiq { font-size:8.5px; letter-spacing:.4em; text-transform:uppercase; color:var(--sage-d); margin-bottom:4px; font-weight:400; }
+.sec-tit { font-family:'Pinyon Script',cursive; font-size:26px; color:var(--terracota); line-height:1.1; margin-bottom:8px; }
+.divf { display:flex; align-items:center; gap:6px; margin-bottom:10px; }
+.divf .ln { flex:1; height:.7px; background:linear-gradient(to right,transparent,var(--coral),transparent); opacity:.35; }
+.divf .fl { font-size:9px; color:var(--terracota); opacity:.55; }
+.sec { margin-bottom:13px; }
+.sep { width:100%; height:1px; background:linear-gradient(to right,transparent,rgba(196,98,58,.18),transparent); margin:10px 0; }
+
+.item { display:flex; justify-content:space-between; align-items:baseline; gap:6px; margin-bottom:6px; }
+.iname { font-family:'Playfair Display',serif; font-size:11.5px; color:var(--ink); flex:1; line-height:1.3; }
+.iname em { display:block; font-family:'Jost',sans-serif; font-size:10px; color:#9a7060; font-style:italic; font-weight:300; margin-top:1px; }
+.idots { flex:1; border-bottom:1px dotted rgba(196,98,58,.2); margin-bottom:3px; min-width:8px; }
+.iprice { font-family:'Jost',sans-serif; font-size:11px; color:var(--terracota); white-space:nowrap; }
+
+.port-logo { font-family:'Pinyon Script',cursive; font-size:60px; color:var(--terracota); text-align:center; line-height:1; margin-bottom:3px; }
+.port-sub { font-size:9px; letter-spacing:.42em; text-transform:uppercase; color:var(--coral); text-align:center; font-weight:300; margin-bottom:12px; }
+.port-div { width:44px; height:1px; background:linear-gradient(to right,transparent,var(--coral),transparent); margin:0 auto 14px; }
+.port-frase { font-family:'Jost',sans-serif; font-size:11.5px; color:var(--brown); text-align:center; font-weight:300; line-height:1.9; font-style:italic; margin-bottom:16px; }
+.port-franja { background:var(--terracota); margin:0 -18px; padding:13px 20px; color:#fff; text-align:center; }
+.port-franja .pf-t { font-family:'Pinyon Script',cursive; font-size:17px; margin-bottom:2px; }
+.port-franja .pf-d { font-size:9.5px; letter-spacing:.16em; opacity:.85; font-weight:300; }
+.port-hor { margin-top:auto; border-top:.75px solid rgba(196,98,58,.18); padding-top:12px; text-align:center; }
+.port-hor .ht { font-size:8.5px; letter-spacing:.35em; text-transform:uppercase; color:var(--sage-d); margin-bottom:5px; }
+.port-hor .hl { font-family:'Playfair Display',serif; font-size:11px; color:var(--brown); font-style:italic; line-height:1.9; }
+
+.nota-pie { position:absolute; bottom:14px; left:0;right:0; text-align:center; font-size:8.5px; letter-spacing:.15em; color:var(--coral); opacity:.45; font-style:italic; z-index:2; }
+.cara { display:none; }
+.cara.activa { display:block; }
+.page-label { font-size:9.5px; letter-spacing:.25em; color:rgba(196,98,58,.4); text-align:center; font-style:italic; }
+
+@media(max-width:720px){
+  .triptico{flex-direction:column;}
+  .panel{width:288px;min-height:auto;}
+  .lomo{width:100%;height:5px;background:linear-gradient(90deg,#f0c8a8,#e8b090,#f0c8a8);}
+  .panel-l{border-radius:6px 6px 0 0;}
+  .panel-r{border-radius:0 0 6px 6px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Flowers <span style="font-size:0.45em;letter-spacing:0.08em;">Coffee</span></div>
+  <div class="tagline">Cafetería · Bar · Restaurante</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="flip(1,this)">☀ Desayunos</button>
+  <button class="tab" onclick="flip(2,this)">🍽 Principales</button>
+  <button class="tab" onclick="flip(3,this)">🥂 Bar & Copas</button>
+  <button class="tab" onclick="flip(4,this)">🍹 Smoothies & Postres</button>
+</div>
+
+<!-- CARA 1 -->
+<div class="cara activa" id="cara1">
+<div class="scene"><div class="triptico">
+  <div class="panel panel-l">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div class="sec">
+        <div class="etiq">Especialidad</div>
+        <div class="sec-tit">Cafés</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Café Solo</div><div class="idots"></div><div class="iprice">1,60 €</div></div>
+        <div class="item"><div class="iname">Café con Leche</div><div class="idots"></div><div class="iprice">1,60 €</div></div>
+        <div class="item"><div class="iname">Café Cortado</div><div class="idots"></div><div class="iprice">1,60 €</div></div>
+        <div class="item"><div class="iname">Café Americano</div><div class="idots"></div><div class="iprice">1,60 €</div></div>
+        <div class="item"><div class="iname">Capuchino</div><div class="idots"></div><div class="iprice">2,20 €</div></div>
+        <div class="item"><div class="iname">Café Bombón</div><div class="idots"></div><div class="iprice">2,40 €</div></div>
+        <div class="item"><div class="iname">Carajillo</div><div class="idots"></div><div class="iprice">2,40 €</div></div>
+        <div class="item"><div class="iname">Colacao</div><div class="idots"></div><div class="iprice">1,70 €</div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="sec">
+        <div class="etiq">Infusiones</div>
+        <div class="sec-tit">Tés</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Té Verde</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+        <div class="item"><div class="iname">Té Rojo</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+        <div class="item"><div class="iname">Manzanilla</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+        <div class="item"><div class="iname">Té Negro</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+        <div class="item"><div class="iname">Rooibos</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+        <div class="item"><div class="iname">Frutos del Bosque</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+        <div class="item"><div class="iname">Menta Poleo</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lomo"></div>
+  <div class="panel panel-c" style="background:linear-gradient(150deg,#fff5ee,#fde8d6 45%,#fbd8c0);">
+    <div class="marco"></div>
+    <svg class="petal" style="top:-18px;right:-14px;width:120px;opacity:.17;" viewBox="0 0 120 120">
+      <ellipse cx="60" cy="24" rx="11" ry="21" fill="#e8a07a" transform="rotate(0 60 60)"/>
+      <ellipse cx="60" cy="24" rx="11" ry="21" fill="#d4a0a0" transform="rotate(45 60 60)"/>
+      <ellipse cx="60" cy="24" rx="11" ry="21" fill="#e8a07a" transform="rotate(90 60 60)"/>
+      <ellipse cx="60" cy="24" rx="11" ry="21" fill="#d4a0a0" transform="rotate(135 60 60)"/>
+      <ellipse cx="60" cy="24" rx="11" ry="21" fill="#e8a07a" transform="rotate(180 60 60)"/>
+      <ellipse cx="60" cy="24" rx="11" ry="21" fill="#d4a0a0" transform="rotate(225 60 60)"/>
+      <ellipse cx="60" cy="24" rx="11" ry="21" fill="#e8a07a" transform="rotate(270 60 60)"/>
+      <ellipse cx="60" cy="24" rx="11" ry="21" fill="#d4a0a0" transform="rotate(315 60 60)"/>
+      <circle cx="60" cy="60" r="13" fill="#c49a6c"/>
+      <circle cx="60" cy="60" r="6" fill="#fde8d6"/>
+    </svg>
+    <div class="p-inner" style="align-items:center;justify-content:center;text-align:center;">
+      <div class="port-logo">Flowers <span style="font-size:0.45em;">Coffee</span></div>
+      <div class="port-sub">Cafetería · Bar · Restaurante</div>
+      <svg width="66" height="66" viewBox="0 0 80 80" style="margin:4px 0 12px;">
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" opacity=".75" transform="rotate(0 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" opacity=".75" transform="rotate(45 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" opacity=".75" transform="rotate(90 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" opacity=".75" transform="rotate(135 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" opacity=".75" transform="rotate(180 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" opacity=".75" transform="rotate(225 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" opacity=".75" transform="rotate(270 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" opacity=".75" transform="rotate(315 40 40)"/>
+        <circle cx="40" cy="40" r="10" fill="#c49a6c"/>
+        <circle cx="40" cy="40" r="5" fill="#fde8d6"/>
+      </svg>
+      <div class="port-div"></div>
+      <div class="port-frase">Un lugar donde cada taza<br>cuenta una historia y cada<br>mesa se vuelve hogar.</div>
+      <div class="port-franja">
+        <div class="pf-t">Reservas & Pedidos</div>
+        <div class="pf-d">919 522 614</div>
+        <div class="pf-d">@flowers.coffee</div>
+      </div>
+      <div class="port-hor">
+        <div class="ht">Horarios</div>
+        <div class="hl">Lun – Jue · 7:00 – 15:30</div>
+        <div class="hl">Lun – Jue · 18:30 – 22:00</div>
+        <div class="hl">Vie – Dom · 7:00 – 15:30</div>
+        <div class="hl">Vie – Dom · 18:30 – 00:00</div>
+      </div>
+    </div>
+  </div>
+  <div class="lomo"></div>
+  <div class="panel panel-r">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div class="sec">
+        <div class="etiq">Incluye café o té</div>
+        <div class="sec-tit">Desayunos</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Barrita con tomate</div><div class="idots"></div><div class="iprice">2,80 €</div></div>
+        <div class="item"><div class="iname">Tosta Molde</div><div class="idots"></div><div class="iprice">2,80 €</div></div>
+        <div class="item"><div class="iname">Croissant plancha</div><div class="idots"></div><div class="iprice">3,00 €</div></div>
+        <div class="item"><div class="iname">Barrita tomate y jamón</div><div class="idots"></div><div class="iprice">4,20 €</div></div>
+        <div class="item"><div class="iname">Sandwich Mixto</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Croissant Mixto</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Pincho Tortilla</div><div class="idots"></div><div class="iprice">4,40 €</div></div>
+        <div class="item"><div class="iname">Tortilla Francesa</div><div class="idots"></div><div class="iprice">4,20 €</div></div>
+        <div class="item"><div class="iname">Sandwich Cubano</div><div class="idots"></div><div class="iprice">4,80 €</div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="sec">
+        <div class="etiq">Con café o té y zumo · 8,00 €</div>
+        <div class="sec-tit">Súper Desayunos</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Arepas huevo, plátano y queso</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Arepa salchichas, queso y huevo</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Tosta Filadelfia, pollo y aguacate</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Bimbo 2 huevos y bacon</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Tosta tomate, atún y huevo duro</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Tosta aguacate y huevo duro</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Tosta Filadelfia, salmón y aguacate</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Tostada Ibérica con queso</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Tortitas con huevo y bacon</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Tosta tomate, huevo y bacon</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Tosta jamón york y queso</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+      </div>
+    </div>
+  </div>
+</div></div></div>
+
+<!-- CARA 2 -->
+<div class="cara" id="cara2">
+<div class="scene"><div class="triptico">
+  <div class="panel panel-l">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div class="sec">
+        <div class="etiq">Del día</div>
+        <div class="sec-tit">Principales</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Ternera<em>Con patatas y ensalada</em></div><div class="idots"></div><div class="iprice">12,00 €</div></div>
+        <div class="item"><div class="iname">Pollo a la plancha<em>Con ensalada y patatas</em></div><div class="idots"></div><div class="iprice">9,80 €</div></div>
+        <div class="item"><div class="iname">Lomo<em>Con patatas y ensalada</em></div><div class="idots"></div><div class="iprice">9,80 €</div></div>
+        <div class="item"><div class="iname">Sandwich Pollo Club</div><div class="idots"></div><div class="iprice">9,70 €</div></div>
+        <div class="item"><div class="iname">Hamburguesa Clásica</div><div class="idots"></div><div class="iprice">7,60 €</div></div>
+        <div class="item"><div class="iname">Hamburguesa de la Casa</div><div class="idots"></div><div class="iprice">9,50 €</div></div>
+        <div class="item"><div class="iname">Hot Dog</div><div class="idots"></div><div class="iprice">5,00 €</div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="sec">
+        <div class="etiq">Hechas al momento</div>
+        <div class="sec-tit">Empanadas</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Queso</div><div class="idots"></div><div class="iprice">3,80 €</div></div>
+        <div class="item"><div class="iname">Queso y Jamón</div><div class="idots"></div><div class="iprice">4,40 €</div></div>
+        <div class="item"><div class="iname">Pollo</div><div class="idots"></div><div class="iprice">4,90 €</div></div>
+        <div class="item"><div class="iname">Carne Mechada</div><div class="idots"></div><div class="iprice">4,90 €</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lomo"></div>
+  <div class="panel panel-c" style="background:linear-gradient(150deg,#fff5ee,#fde8d6 45%,#fbd8c0);">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div style="text-align:center;margin-bottom:12px;">
+        <div style="font-family:'Pinyon Script',cursive;font-size:34px;color:var(--terracota);line-height:1;">Bocadillos</div>
+        <div style="font-size:8.5px;letter-spacing:.3em;color:var(--coral);text-transform:uppercase;font-weight:300;margin-top:2px;">Bocadillo 7,00 € · Montado 4,00 €</div>
+        <div style="width:38px;height:.7px;background:linear-gradient(to right,transparent,var(--coral),transparent);margin:8px auto;"></div>
+      </div>
+      <div class="sec">
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Lomo y Queso</div></div>
+        <div class="item"><div class="iname">Pollo</div></div>
+        <div class="item"><div class="iname">Panceta</div></div>
+        <div class="item"><div class="iname">Calamar</div></div>
+        <div class="item"><div class="iname">Bacon y Queso</div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="sec">
+        <div class="etiq">Para compartir</div>
+        <div class="sec-tit">Raciones</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Nachos Tex-Mex<em>Carne mechada, alubias negras, queso, guacamole, jalapeño, pico de gallo</em></div><div class="idots"></div><div class="iprice">9,00 €</div></div>
+        <div class="item"><div class="iname">Nachos<em>Queso, guacamole, jalapeño, pico de gallo y salsa</em></div><div class="idots"></div><div class="iprice">6,50 €</div></div>
+        <div class="item"><div class="iname">Patatas Bravas</div><div class="idots"></div><div class="iprice">6,50 €</div></div>
+        <div class="item"><div class="iname">Fingers</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Croquetas</div><div class="idots"></div><div class="iprice">7,90 €</div></div>
+        <div class="item"><div class="iname">Huevos Rotos con Jamón</div><div class="idots"></div><div class="iprice">10,00 €</div></div>
+        <div class="item"><div class="iname">Calamares</div><div class="idots"></div><div class="iprice">12,00 €</div></div>
+        <div class="item"><div class="iname">Tequeños</div><div class="idots"></div><div class="iprice">7,80 €</div></div>
+        <div class="item"><div class="iname">Albóndigas en Salsa</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Ensaladilla Rusa</div><div class="idots"></div><div class="iprice">7,00 €</div></div>
+        <div class="item"><div class="iname">Salchipapas</div><div class="idots"></div><div class="iprice">8,00 €</div></div>
+        <div class="item"><div class="iname">Salchipapas Crujiente Pollo</div><div class="idots"></div><div class="iprice">10,00 €</div></div>
+        <div class="item"><div class="iname">Ensalada César</div><div class="idots"></div><div class="iprice">7,80 €</div></div>
+        <div class="item"><div class="iname">Ensalada Mixta</div><div class="idots"></div><div class="iprice">6,60 €</div></div>
+        <div class="item"><div class="iname">Alitas</div><div class="idots"></div><div class="iprice">8,30 €</div></div>
+        <div class="item"><div class="iname">Ensalada Rulo de Cabra</div><div class="idots"></div><div class="iprice">9,80 €</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lomo"></div>
+  <div class="panel panel-r">
+    <div class="marco"></div>
+    <div class="p-inner" style="justify-content:center;align-items:center;text-align:center;">
+      <svg width="60" height="60" viewBox="0 0 80 80" style="margin-bottom:16px;opacity:.7;">
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" transform="rotate(0 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" transform="rotate(45 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" transform="rotate(90 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" transform="rotate(135 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" transform="rotate(180 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" transform="rotate(225 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" transform="rotate(270 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" transform="rotate(315 40 40)"/>
+        <circle cx="40" cy="40" r="10" fill="#c49a6c"/>
+        <circle cx="40" cy="40" r="5" fill="#fde8d6"/>
+      </svg>
+      <div style="font-family:'Pinyon Script',cursive;font-size:28px;color:var(--terracota);">Buen provecho</div>
+      <div style="width:35px;height:.7px;background:linear-gradient(to right,transparent,var(--coral),transparent);margin:14px auto;"></div>
+      <div style="font-family:'Jost',sans-serif;font-size:11px;color:var(--brown);font-style:italic;line-height:2;">
+        Todos nuestros platos<br>se elaboran con<br>productos frescos<br>y de temporada.
+      </div>
+    </div>
+  </div>
+</div></div></div>
+
+<!-- CARA 3 -->
+<div class="cara" id="cara3">
+<div class="scene"><div class="triptico">
+  <div class="panel panel-l">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div class="sec">
+        <div class="etiq">De barril</div>
+        <div class="sec-tit">Cervezas</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Caña</div><div class="idots"></div><div class="iprice">1,80 €</div></div>
+        <div class="item"><div class="iname">Doble</div><div class="idots"></div><div class="iprice">2,70 €</div></div>
+        <div class="item"><div class="iname">Tercio</div><div class="idots"></div><div class="iprice">2,80 €</div></div>
+        <div class="item"><div class="iname">Copa de Cerveza</div><div class="idots"></div><div class="iprice">2,80 €</div></div>
+        <div class="item"><div class="iname">Jarra</div><div class="idots"></div><div class="iprice">4,60 €</div></div>
+        <div class="item"><div class="iname">Tinto de Verano</div><div class="idots"></div><div class="iprice">2,80 €</div></div>
+        <div class="item"><div class="iname">Jarra Tinto de Verano</div><div class="idots"></div><div class="iprice">4,60 €</div></div>
+        <div class="item"><div class="iname">Copa de Vino</div><div class="idots"></div><div class="iprice">2,80 €</div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="sec">
+        <div class="etiq">Sin alcohol</div>
+        <div class="sec-tit">Refrescos</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Agua</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+        <div class="item"><div class="iname">Coca-Cola</div><div class="idots"></div><div class="iprice">2,70 €</div></div>
+        <div class="item"><div class="iname">Zumos</div><div class="idots"></div><div class="iprice">2,20 €</div></div>
+        <div class="item"><div class="iname">Zumo Naranja</div><div class="idots"></div><div class="iprice">3,00 €</div></div>
+        <div class="item"><div class="iname">Better Cas</div><div class="idots"></div><div class="iprice">2,50 €</div></div>
+        <div class="item"><div class="iname">Agua con Gas</div><div class="idots"></div><div class="iprice">2,50 €</div></div>
+        <div class="item"><div class="iname">Tónica</div><div class="idots"></div><div class="iprice">2,50 €</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lomo"></div>
+  <div class="panel panel-c" style="background:linear-gradient(150deg,#fff5ee,#fde8d6 45%,#fbd8c0);">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div class="sec">
+        <div class="etiq">Combinados</div>
+        <div class="sec-tit">Copas</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">D.i.d. + Bebida</div><div class="idots"></div><div class="iprice">5,00 €</div></div>
+        <div class="item"><div class="iname">Brugal + Bebida</div><div class="idots"></div><div class="iprice">5,00 €</div></div>
+        <div class="item"><div class="iname">J.B. + Bebida</div><div class="idots"></div><div class="iprice">5,00 €</div></div>
+        <div class="item"><div class="iname">Copa Normal</div><div class="idots"></div><div class="iprice">6,00 €</div></div>
+        <div class="item"><div class="iname">Copa Especial</div><div class="idots"></div><div class="iprice">7,50 €</div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="sec">
+        <div class="etiq">Licores & Chupitos</div>
+        <div class="sec-tit">Licores</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Copa</div><div class="idots"></div><div class="iprice">2,60 €</div></div>
+        <div class="item"><div class="iname">Chupito</div><div class="idots"></div><div class="iprice">1,50 €</div></div>
+        <div class="item"><div class="iname">Chupito Normal</div><div class="idots"></div><div class="iprice">2,00 €</div></div>
+        <div class="item"><div class="iname">Chupito Premium</div><div class="idots"></div><div class="iprice">3,00 €</div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="sec">
+        <div class="etiq">Sin alcohol</div>
+        <div class="sec-tit">Mocktails</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">San Francisco<em>Zumo naranja, melocotón, piña y granadina</em></div><div class="idots"></div><div class="iprice">5,00 €</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lomo"></div>
+  <div class="panel panel-r">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div class="sec">
+        <div class="etiq">Todos a 6,80 €</div>
+        <div class="sec-tit">Cócteles</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Margarita<em>Tequila, lima, azúcar, triple seco</em></div><div class="idots"></div><div class="iprice">6,80 €</div></div>
+        <div class="item"><div class="iname">Sex on the Beach<em>Aristof, lima, melocotón, naranja, piña</em></div><div class="idots"></div><div class="iprice">6,80 €</div></div>
+        <div class="item"><div class="iname">Daiquiri Fresa<em>Bacardí, lima, azúcar, fresa</em></div><div class="idots"></div><div class="iprice">6,80 €</div></div>
+        <div class="item"><div class="iname">Piña Colada<em>Bacardí, piña, leche de coco, condensada</em></div><div class="idots"></div><div class="iprice">6,80 €</div></div>
+        <div class="item"><div class="iname">Mojito<em>Bacardí, lima, hierbabuena, azúcar moreno</em></div><div class="idots"></div><div class="iprice">6,80 €</div></div>
+      </div>
+    </div>
+    <div class="nota-pie">Bar · desde las 17:00</div>
+  </div>
+</div></div></div>
+
+<!-- CARA 4 -->
+<div class="cara" id="cara4">
+<div class="scene"><div class="triptico">
+  <div class="panel panel-l">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div class="sec">
+        <div class="etiq">Todos a 4,00 €</div>
+        <div class="sec-tit">Smoothies</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Piña</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Maracuyá</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Plátano</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Fresa</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Tropical</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Frutos del Bosque</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="sec">
+        <div class="etiq">Todos a 5,50 €</div>
+        <div class="sec-tit">Batidas</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Fresa</div><div class="idots"></div><div class="iprice">5,50 €</div></div>
+        <div class="item"><div class="iname">Vainilla</div><div class="idots"></div><div class="iprice">5,50 €</div></div>
+        <div class="item"><div class="iname">Chocolate</div><div class="idots"></div><div class="iprice">5,50 €</div></div>
+        <div class="item"><div class="iname">Frutos del Bosque</div><div class="idots"></div><div class="iprice">5,50 €</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lomo"></div>
+  <div class="panel panel-c" style="background:linear-gradient(150deg,#fff5ee,#fde8d6 45%,#fbd8c0);">
+    <div class="marco"></div>
+    <div class="p-inner">
+      <div class="sec">
+        <div class="etiq">Para endulzar el momento</div>
+        <div class="sec-tit">Ricos Postres</div>
+        <div class="divf"><div class="ln"></div><div class="fl">✿</div><div class="ln"></div></div>
+        <div class="item"><div class="iname">Torta de Chocolate</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Quesillo</div><div class="idots"></div><div class="iprice">4,00 €</div></div>
+        <div class="item"><div class="iname">Tarta de Vainilla</div><div class="idots"></div><div class="iprice">3,00 €</div></div>
+        <div class="item"><div class="iname">Gofre</div><div class="idots"></div><div class="iprice">3,20 €</div></div>
+        <div class="item"><div class="iname">Tortitas</div><div class="idots"></div><div class="iprice">3,20 €</div></div>
+        <div class="item"><div class="iname">Postres Mixtos</div><div class="idots"></div><div class="iprice">7,00 €</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lomo"></div>
+  <div class="panel panel-r">
+    <div class="marco"></div>
+    <div class="p-inner" style="justify-content:center;align-items:center;text-align:center;">
+      <svg width="56" height="56" viewBox="0 0 80 80" style="margin-bottom:14px;opacity:.65;">
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" transform="rotate(0 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" transform="rotate(45 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" transform="rotate(90 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" transform="rotate(135 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" transform="rotate(180 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" transform="rotate(225 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#e8a07a" transform="rotate(270 40 40)"/>
+        <ellipse cx="40" cy="16" rx="8" ry="15" fill="#d4a0a0" transform="rotate(315 40 40)"/>
+        <circle cx="40" cy="40" r="10" fill="#c49a6c"/>
+        <circle cx="40" cy="40" r="5" fill="#fde8d6"/>
+      </svg>
+      <div style="font-family:'Pinyon Script',cursive;font-size:26px;color:var(--terracota);">Gracias por venir</div>
+      <div style="width:32px;height:.7px;background:linear-gradient(to right,transparent,var(--coral),transparent);margin:12px auto;"></div>
+      <div style="font-family:'Jost',sans-serif;font-size:10.5px;color:var(--brown);font-style:italic;line-height:2;">
+        Esperamos verte<br>pronto de nuevo<br>en Flowers Coffee.
+      </div>
+    </div>
+  </div>
+</div></div></div>
+
+<div class="page-label" id="page-label">Cafés · Infusiones · Desayunos</div>
+
+<script>
+const labels = [
+  'Cafés · Infusiones · Desayunos',
+  'Principales · Bocadillos · Raciones',
+  'Cervezas · Refrescos · Copas · Cócteles',
+  'Smoothies · Batidas · Postres'
+];
+function flip(n, btn) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  for(let i=1;i<=4;i++) document.getElementById('cara'+i).classList.toggle('activa', i===n);
+  document.getElementById('page-label').textContent = labels[n-1];
+}
+</script>
+</body>
+</html>
